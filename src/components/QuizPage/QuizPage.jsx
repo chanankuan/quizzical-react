@@ -11,7 +11,7 @@ import { Button } from '../Button/Button.styled';
 const QuizPage = props => {
   const [quizData, setQuizData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userResults, setUserResults] = useState(null);
+  const [userResults, setUserResults] = useState(0);
   const [userAnswers, setUserAnswers] = useState({
     1: '',
     2: '',
@@ -69,7 +69,7 @@ const QuizPage = props => {
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {userResults && <div>You scored {userResults}/5 correct answers</div>}
-          <Button type="submit">Submit</Button>
+          {quizData.length > 0 && <Button type="submit">Check Answers</Button>}
         </div>
       </form>
 
