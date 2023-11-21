@@ -6,10 +6,12 @@ import { getQuizData } from '../../service/quiz-service';
 import QuizQuestion from '../QuizQuestion/QuizQuestion';
 import { nanoid } from 'nanoid';
 import Loader from '../Loader/Loader';
+import { Button } from '../Button/Button.styled';
 
 const QuizPage = props => {
   const [quizData, setQuizData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userResults, setUserResults] = useState(null);
   const [userAnswers, setUserAnswers] = useState({
     1: '',
     2: '',
@@ -30,13 +32,25 @@ const QuizPage = props => {
 
   const handleSubmit = event => {
     event.preventDefault();
+
+    const results = Object.values(userAnswers).reduce((acc, n) => {
+      return n === true ? acc + 1 : acc;
+    }, 0);
+    console.log(Object.values(userAnswers));
+
+    setUserResults(results);
   };
 
-  const handleChange = event => {
+  const handleChange = (event, correct) => {
     const { name, value } = event.target;
 
-    setUserAnswers(prevUserAnswers => ({ ...prevUserAnswers, [name]: value }));
+    setUserAnswers(prevUserAnswers => ({
+      ...prevUserAnswers,
+      [name]: value === correct,
+    }));
   };
+
+  console.log(userAnswers);
 
   return (
     <Section>
@@ -53,7 +67,10 @@ const QuizPage = props => {
           ))}
         </List>
 
-        <button type="submit">Submit</button>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {userResults && <div>You scored {userResults}/5 correct answers</div>}
+          <Button type="submit">Submit</Button>
+        </div>
       </form>
 
       {isLoading && <Loader />}

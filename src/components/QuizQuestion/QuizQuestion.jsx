@@ -12,7 +12,14 @@ import {
 } from './QuizQuestion.styled';
 
 const QuizQuestion = ({ name, data, onChange, userAnswers }) => {
+  const [userAnswer, setUserAnswer] = useState('');
   const options = [data.correct_answer, ...data.incorrect_answers];
+
+  const handleChange = event => {
+    setUserAnswer(event.target.value);
+    onChange(event, data.correct_answer);
+  };
+
   return (
     <Fieldset>
       <Title>{decode(data.question)}</Title>
@@ -27,8 +34,9 @@ const QuizQuestion = ({ name, data, onChange, userAnswers }) => {
                 id={option}
                 name={name}
                 value={option}
-                checked={userAnswers[name] === option}
-                onChange={onChange}
+                // checked={userAnswers[name] === option}
+                checked={userAnswer === option}
+                onChange={event => handleChange(event, userAnswer)}
               />
               <Label htmlFor={option}>{option}</Label>
             </Option>
