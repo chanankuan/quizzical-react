@@ -90,8 +90,6 @@ const QuizPage = () => {
     }));
   };
 
-  console.log(playAgain);
-
   return (
     <Section>
       {quizData.length > 0 && (
