@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { decode } from 'html-entities';
-import { nanoid } from 'nanoid';
 import {
   Fieldset,
   InputHidden,
@@ -11,31 +10,36 @@ import {
   Title,
 } from './QuizQuestion.styled';
 
-const QuizQuestion = ({ name, data, onChange, userAnswers }) => {
+const QuizQuestion = ({
+  name,
+  data: { all_answers, question, correct_answer },
+  onChange,
+  showResults,
+}) => {
   const [userAnswer, setUserAnswer] = useState('');
-  const options = [data.correct_answer, ...data.incorrect_answers];
 
   const handleChange = event => {
     setUserAnswer(event.target.value);
-    onChange(event, data.correct_answer);
+    onChange(event, correct_answer);
   };
 
   return (
     <Fieldset>
-      <Title>{decode(data.question)}</Title>
+      <Title>{decode(question)}</Title>
       <List>
-        {options.map((option, index) => {
+        {all_answers.map((option, idx) => {
           option = decode(option);
 
           return (
-            <Option key={index + 1}>
+            <Option key={idx + 1}>
               <InputHidden
                 type="radio"
                 id={option}
                 name={name}
                 value={option}
-                // checked={userAnswers[name] === option}
                 checked={userAnswer === option}
+                disabled={showResults ? 'disabled' : null}
+                isCorrect={option === correct_answer}
                 onChange={event => handleChange(event, userAnswer)}
               />
               <Label htmlFor={option}>{option}</Label>
@@ -47,6 +51,14 @@ const QuizQuestion = ({ name, data, onChange, userAnswers }) => {
   );
 };
 
-QuizQuestion.propTypes = {};
+QuizQuestion.propTypes = {
+  name: PropTypes.number.isRequired,
+  data: PropTypes.shape({
+    all_answers: PropTypes.array.isRequired,
+    question: PropTypes.string.isRequired,
+    correct_answer: PropTypes.string.isRequired,
+  }),
+  onChange: PropTypes.func.isRequired,
+};
 
 export default QuizQuestion;

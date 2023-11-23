@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 
+export const Form = styled.form``;
+
 export const List = styled.div`
   list-style: none;
   padding: 0;
@@ -7,3 +9,12 @@ export const List = styled.div`
   flex-direction: column;
   margin-bottom: 40px;
 `;
+
+export const Result = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const Score = styled.p``;
+
+export const Error = styled.h2``;

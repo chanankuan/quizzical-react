@@ -44,6 +44,8 @@ export const Label = styled.label`
   border: 1px solid #4d5b9e;
   border-radius: 8px;
   padding: 4px 10px;
+  font-weight: 500;
+  color: #293264;
   cursor: pointer;
 `;
 
@@ -63,5 +65,23 @@ export const InputHidden = styled.input`
   &:checked + label {
     background-color: #d6dbf5;
     border: 1px solid #d6dbf5;
+  }
+
+  &:disabled + label {
+    background-color: ${props =>
+      (props.isCorrect && props.checked) || props.isCorrect
+        ? '#94D7A2'
+        : props.checked && !props.isCorrect
+        ? '#fadbdb'
+        : 'transparent'};
+    border: 1px solid
+      ${props =>
+        (props.isCorrect && props.checked) || props.isCorrect
+          ? '#94D7A2'
+          : props.checked && !props.isCorrect
+          ? '#fadbdb'
+          : '#d6dbf5'};
+    color: ${props =>
+      props.isCorrect && props.checked ? '#293264' : '#4D5B9E'};
   }
 `;

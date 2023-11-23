@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from '../Button/Button.styled';
 import { Section } from '../Section/Section.styled';
 import { Description, Title } from './HomePage.styled';
 import { StartButton } from '../HomePage/HomePage.styled';
@@ -14,6 +12,10 @@ const HomePage = props => {
       <StartButton onClick={props.onClick}>Start quiz</StartButton>
     </Section>
   );
+};
+
+HomePage.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };
 
 export default HomePage;

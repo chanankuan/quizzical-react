@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Section } from '../Section/Section.styled';
-import { List } from './QuizPage.styled';
-import { getQuizData } from '../../service/quiz-service';
 import QuizQuestion from '../QuizQuestion/QuizQuestion';
-import { nanoid } from 'nanoid';
 import Loader from '../Loader/Loader';
+import { Section } from '../Section/Section.styled';
+import { Form, List, Result, Score, Error } from './QuizPage.styled';
+import { getQuizData } from '../../service/quiz-service';
 import { Button } from '../Button/Button.styled';
+import shuffle from '../../utils/shuffle';
 
-const QuizPage = props => {
+const QuizPage = () => {
   const [quizData, setQuizData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userResults, setUserResults] = useState(0);
+  const [showError, setShowError] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [userResults, setUserResults] = useState(null);
   const [userAnswers, setUserAnswers] = useState({
     1: '',
     2: '',
@@ -20,11 +22,20 @@ const QuizPage = props => {
     5: '',
   });
 
+  const shuffledAnswers = useMemo(() => {
+    return quizData.map(quiz => {
+      const allAnswers = [quiz.correct_answer, ...quiz.incorrect_answers];
+      return shuffle(allAnswers);
+    });
+  }, [quizData]);
+
   useEffect(() => {
     setIsLoading(true);
     getQuizData()
-      .then(data => setQuizData(data))
-      .catch(error => console.log(error))
+      .then(data => {
+        setQuizData(data);
+      })
+      .catch(error => setShowError(true))
       .finally(() => {
         setIsLoading(false);
       });
@@ -36,9 +47,9 @@ const QuizPage = props => {
     const results = Object.values(userAnswers).reduce((acc, n) => {
       return n === true ? acc + 1 : acc;
     }, 0);
-    console.log(Object.values(userAnswers));
 
     setUserResults(results);
+    setShowResults(true);
   };
 
   const handleChange = (event, correct) => {
@@ -50,34 +61,45 @@ const QuizPage = props => {
     }));
   };
 
-  console.log(userAnswers);
-
   return (
     <Section>
-      <form onSubmit={handleSubmit}>
-        <List>
-          {quizData.map((quiz, index) => (
-            <QuizQuestion
-              key={index}
-              name={index + 1}
-              data={quiz}
-              onChange={handleChange}
-              userAnswers={userAnswers}
-            />
-          ))}
-        </List>
+      {quizData.length > 0 && (
+        <Form onSubmit={handleSubmit}>
+          <List>
+            {quizData.map((quiz, idx) => {
+              return (
+                <QuizQuestion
+                  key={idx}
+                  name={idx + 1}
+                  data={{ ...quiz, all_answers: shuffledAnswers[idx] }}
+                  onChange={handleChange}
+                  showResults={showResults}
+                />
+              );
+            })}
+          </List>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          {userResults && <div>You scored {userResults}/5 correct answers</div>}
-          {quizData.length > 0 && <Button type="submit">Check Answers</Button>}
-        </div>
-      </form>
+          <Result>
+            {showResults && (
+              <Score>You scored {userResults}/5 correct answers</Score>
+            )}
+            {<Button type="submit">Check Answers</Button>}
+          </Result>
+        </Form>
+      )}
 
+      {showError && (
+        <Error>Oops. Something went wrong. Please refresh the page.</Error>
+      )}
       {isLoading && <Loader />}
     </Section>
   );
 };
 
-QuizPage.propTypes = {};
+QuizQuestion.propTypes = {
+  name: PropTypes.number.isRequired,
+  data: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
 
 export default QuizPage;
