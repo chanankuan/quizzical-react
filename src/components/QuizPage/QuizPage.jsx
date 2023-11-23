@@ -13,6 +13,7 @@ const QuizPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [playAgain, setPlayAgain] = useState(false);
   const [userResults, setUserResults] = useState(null);
   const [userAnswers, setUserAnswers] = useState({
     1: '',
@@ -29,21 +30,49 @@ const QuizPage = () => {
     });
   }, [quizData]);
 
-  useEffect(() => {
-    setIsLoading(true);
-    getQuizData()
-      .then(data => {
-        setQuizData(data);
-      })
-      .catch(error => setShowError(true))
-      .finally(() => {
-        setIsLoading(false);
+  const fetchData = async () => {
+    try {
+      setQuizData([]);
+      setIsLoading(true);
+      setShowResults(false);
+      setUserAnswers({
+        1: '',
+        2: '',
+        3: '',
+        4: '',
+        5: '',
       });
+
+      const data = await getQuizData();
+      setQuizData(data);
+    } catch {
+      setShowError(true);
+    } finally {
+      setIsLoading(false);
+      setPlayAgain(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   getQuizData()
+  //     .then(data => {
+  //       setQuizData(data);
+  //     })
+  //     .catch(() => setShowError(true))
+  //     .finally(() => {
+  //       setIsLoading(false);
+  //     });
+  // }, []);
 
   const handleSubmit = event => {
     event.preventDefault();
 
+    setPlayAgain(true);
     const results = Object.values(userAnswers).reduce((acc, n) => {
       return n === true ? acc + 1 : acc;
     }, 0);
@@ -60,6 +89,8 @@ const QuizPage = () => {
       [name]: value === correct,
     }));
   };
+
+  console.log(playAgain);
 
   return (
     <Section>
@@ -83,7 +114,13 @@ const QuizPage = () => {
             {showResults && (
               <Score>You scored {userResults}/5 correct answers</Score>
             )}
-            {<Button type="submit">Check Answers</Button>}
+            {playAgain ? (
+              <Button type="button" onClick={fetchData}>
+                Play again
+              </Button>
+            ) : (
+              <Button type="submit">Check Answers</Button>
+            )}
           </Result>
         </Form>
       )}
