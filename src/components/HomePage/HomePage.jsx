@@ -8,7 +8,11 @@ const HomePage = props => {
   return (
     <Section>
       <Title>Quizzical</Title>
-      <Description>Some description if needed</Description>
+      <Description>
+        Elevate your intellect with diverse quizzes spanning science, pop
+        culture, and more, engagingly designed to challenge and entertain your
+        curious mind.
+      </Description>
       <StartButton onClick={props.onClick}>Start quiz</StartButton>
     </Section>
   );
