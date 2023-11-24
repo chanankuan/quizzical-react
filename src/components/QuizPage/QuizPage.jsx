@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import QuizQuestion from '../QuizQuestion/QuizQuestion';
 import Loader from '../Loader/Loader';
