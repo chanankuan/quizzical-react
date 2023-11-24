@@ -34,7 +34,7 @@ const QuizQuestion = ({
             <Option key={idx + 1}>
               <InputHidden
                 type="radio"
-                id={option}
+                id={name + '-' + option}
                 name={name}
                 value={option}
                 checked={userAnswer === option}
@@ -42,7 +42,7 @@ const QuizQuestion = ({
                 isCorrect={option === correct_answer}
                 onChange={event => handleChange(event, userAnswer)}
               />
-              <Label htmlFor={option}>{option}</Label>
+              <Label htmlFor={name + '-' + option}>{option}</Label>
             </Option>
           );
         })}
