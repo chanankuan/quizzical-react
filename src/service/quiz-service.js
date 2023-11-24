@@ -1,7 +1,12 @@
 import axios from 'axios';
 
-export const getQuizData = async () => {
-  const res = await axios.get('https://opentdb.com/api.php?amount=5');
-  // console.log(res.data.results);
+export const getQuizData = async (queryObj) => {
+axios.defaults.baseURL = 'https://opentdb.com/';
+  const params = new URLSearchParams({
+    amount: 5,
+    ...queryObj,
+  });
+
+  const res = await axios.get('/api.php/', {params});
   return res.data.results;
 };

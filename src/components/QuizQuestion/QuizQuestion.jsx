@@ -59,6 +59,7 @@ QuizQuestion.propTypes = {
     correct_answer: PropTypes.string.isRequired,
   }),
   onChange: PropTypes.func.isRequired,
+  showResults: PropTypes.bool.isRequired,
 };
 
 export default QuizQuestion;

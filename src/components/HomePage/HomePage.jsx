@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Section } from '../Section/Section.styled';
 import { Description, Title } from './HomePage.styled';
-import { StartButton } from '../HomePage/HomePage.styled';
+import { getCategoryList } from '../../service/category-service';
+import FormQuery from '../FormQuery/FormQuery';
 
-const HomePage = props => {
+const HomePage = ({ onClick }) => {
+  const [categoryList, setCategoryList] = useState([]);
+
+  useEffect(() => {
+    getCategoryList().then(data => {
+      setCategoryList(data);
+    });
+  }, []);
+
   return (
     <Section>
       <Title>Quizzical</Title>
-      <Description>
-        Elevate your intellect with diverse quizzes spanning science, pop
-        culture, and more, engagingly designed to challenge and entertain your
-        curious mind.
-      </Description>
-      <StartButton onClick={props.onClick}>Start quiz</StartButton>
+      <Description>Answer the questions and test your knowledge!</Description>
+
+      <FormQuery handleSubmit={onClick} categoryList={categoryList} />
     </Section>
   );
 };

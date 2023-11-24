@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import QuizQuestion from '../QuizQuestion/QuizQuestion';
 import Loader from '../Loader/Loader';
@@ -7,8 +7,9 @@ import { Form, List, Result, Score, Error } from './QuizPage.styled';
 import { getQuizData } from '../../service/quiz-service';
 import { Button } from '../Button/Button.styled';
 import shuffle from '../../utils/shuffle';
+import { getCategoryList } from '../../service/category-service';
 
-const QuizPage = () => {
+const QuizPage = ({ queryObj, onReturn }) => {
   const [quizData, setQuizData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -30,44 +31,22 @@ const QuizPage = () => {
     });
   }, [quizData]);
 
-  const fetchData = async () => {
-    try {
-      setQuizData([]);
-      setIsLoading(true);
-      setShowResults(false);
-      setUserAnswers({
-        1: '',
-        2: '',
-        3: '',
-        4: '',
-        5: '',
-      });
-
-      const data = await getQuizData();
-      setQuizData(data);
-    } catch {
-      setShowError(true);
-    } finally {
-      setIsLoading(false);
-      setPlayAgain(false);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
-  }, []);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   getQuizData()
-  //     .then(data => {
-  //       setQuizData(data);
-  //     })
-  //     .catch(() => setShowError(true))
-  //     .finally(() => {
-  //       setIsLoading(false);
-  //     });
-  // }, []);
+        const data = await getQuizData(queryObj);
+        setQuizData(data);
+      } catch {
+        setShowError(true);
+      } finally {
+        setIsLoading(false);
+        setPlayAgain(false);
+      }
+    };
+    fetchData();
+  }, [queryObj]);
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -89,6 +68,10 @@ const QuizPage = () => {
       [name]: value === correct,
     }));
   };
+
+  useEffect(() => {
+    getCategoryList();
+  }, []);
 
   return (
     <Section>
@@ -113,7 +96,7 @@ const QuizPage = () => {
               <Score>You scored {userResults}/5 correct answers</Score>
             )}
             {playAgain ? (
-              <Button type="button" onClick={fetchData}>
+              <Button type="button" onClick={onReturn}>
                 Play again
               </Button>
             ) : (
@@ -132,9 +115,8 @@ const QuizPage = () => {
 };
 
 QuizQuestion.propTypes = {
-  name: PropTypes.number.isRequired,
-  data: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
+  queryObj: PropTypes.object,
+  onReturn: PropTypes.func.isRequired,
 };
 
 export default QuizPage;
