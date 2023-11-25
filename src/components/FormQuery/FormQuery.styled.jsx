@@ -7,12 +7,15 @@ import { Button } from '../Button/Button.styled';
 export const Title = styled.h2`
   font-size: 16px;
   font-weight: 500;
+  flex-basis: 150px;
   margin: 0;
 `;
 
 export const Form = styled(FormControl)`
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
+  row-gap: 10px;
   align-items: center;
   width: 100%;
   margin-bottom: 20px;
