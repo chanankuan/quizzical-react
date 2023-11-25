@@ -16,13 +16,7 @@ const QuizPage = ({ queryObj, onReturn }) => {
   const [showResults, setShowResults] = useState(false);
   const [playAgain, setPlayAgain] = useState(false);
   const [userResults, setUserResults] = useState(null);
-  const [userAnswers, setUserAnswers] = useState({
-    1: '',
-    2: '',
-    3: '',
-    4: '',
-    5: '',
-  });
+  const [userAnswers, setUserAnswers] = useState({});
 
   const shuffledAnswers = useMemo(() => {
     return quizData.map(quiz => {
@@ -100,7 +94,12 @@ const QuizPage = ({ queryObj, onReturn }) => {
                 Play again
               </Button>
             ) : (
-              <Button type="submit">Check Answers</Button>
+              <Button
+                type="submit"
+                disabled={Object.keys(userAnswers).length !== 5}
+              >
+                Check Answers
+              </Button>
             )}
           </Result>
         </Form>
@@ -116,7 +115,7 @@ const QuizPage = ({ queryObj, onReturn }) => {
 
 QuizQuestion.propTypes = {
   queryObj: PropTypes.object,
-  onReturn: PropTypes.func.isRequired,
+  onReturn: PropTypes.func,
 };
 
 export default QuizPage;

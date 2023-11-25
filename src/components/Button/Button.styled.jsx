@@ -20,4 +20,9 @@ export const Button = styled.button`
   &:hover {
     background-color: #4d5b9e;
   }
+
+  &:disabled {
+    background-color: #97a7f7;
+    cursor: unset;
+  }
 `;

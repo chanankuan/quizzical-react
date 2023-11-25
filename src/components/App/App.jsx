@@ -27,6 +27,23 @@ const App = () => {
       ) : (
         <HomePage onClick={startQuiz} />
       )}
+      <p
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          fontSize: 12,
+          letterSpacing: 1,
+        }}
+      >
+        Developed by{' '}
+        <a
+          href="https://github.com/chanankuan/quizzical-react"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Anton Chan
+        </a>
+      </p>
     </Container>
   );
 };
